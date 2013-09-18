@@ -27,7 +27,7 @@ namespace Murmur
             this._seed = seed;
         }
 
-        public uint Seed
+        protected uint Seed
         {
             get { return this._seed; }
         }

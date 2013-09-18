@@ -38,7 +38,7 @@ namespace Murmur
             get { return 32; }
         }
 
-        public uint Seed
+        private uint Seed
         {
             get { return this._seed; }
         }

@@ -30,7 +30,9 @@ namespace Murmur
 
     public static class MurmurHash
     {
+// ReSharper disable UnusedMember.Global
         public static Murmur32 Create32(uint seed = 0, bool managed = true)
+// ReSharper restore UnusedMember.Global
         {
             if (managed)
                 return new Murmur32ManagedX86(seed);
@@ -38,8 +40,10 @@ namespace Murmur
             return new Murmur32UnmanagedX86(seed);
         }
 
+// ReSharper disable UnusedMember.Global
         public static Murmur128 Create128(uint seed = 0, bool managed = true,
             AlgorithmPreference preference = AlgorithmPreference.Auto)
+// ReSharper restore UnusedMember.Global
         {
             var algorithm = managed
                 ? Pick(seed, preference, s => new Murmur128ManagedX86(s), s => new Murmur128ManagedX64(s))
