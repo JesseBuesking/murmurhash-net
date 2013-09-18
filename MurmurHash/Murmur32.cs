@@ -1,4 +1,5 @@
-﻿/// Copyright 2012 Darren Kopp
+﻿#pragma warning disable 1587
+/// Copyright 2012 Darren Kopp
 ///
 /// Licensed under the Apache License, Version 2.0 (the "License");
 /// you may not use this file except in compliance with the License.
@@ -11,6 +12,7 @@
 /// WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 /// See the License for the specific language governing permissions and
 /// limitations under the License.
+#pragma warning restore 1587
 
 using System;
 using System.Security.Cryptography;
@@ -23,11 +25,11 @@ namespace Murmur
 
         protected const uint C2 = 0x1b873593;
 
-        private readonly uint _Seed;
+        private readonly uint _seed;
 
         protected Murmur32(uint seed)
         {
-            this._Seed = seed;
+            this._seed = seed;
             this.Reset();
         }
 
@@ -38,7 +40,7 @@ namespace Murmur
 
         public uint Seed
         {
-            get { return this._Seed; }
+            get { return this._seed; }
         }
 
         protected uint H1

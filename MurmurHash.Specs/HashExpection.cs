@@ -2,24 +2,24 @@
 {
     internal class HashExpection
     {
-        private readonly uint _Result;
+        private readonly uint _result;
 
-        private readonly int _Bits;
+        private readonly int _bits;
 
         public HashExpection(int bits, uint result)
         {
-            this._Bits = bits;
-            this._Result = result;
+            this._bits = bits;
+            this._result = result;
         }
 
         public uint Result
         {
-            get { return this._Result; }
+            get { return this._result; }
         }
 
         public int Bits
         {
-            get { return this._Bits; }
+            get { return this._bits; }
         }
     }
 }

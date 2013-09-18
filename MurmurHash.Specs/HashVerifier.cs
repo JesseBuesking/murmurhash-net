@@ -21,9 +21,6 @@ namespace Murmur.Specs
 
             using (var algorithm = algorithmFactory(0))
                 return BitConverter.ToUInt32(algorithm.ComputeHash(hashes), 0);
-
-            //uint verification = (uint)((final[0] << 0) | (final[1] << 8) | (final[2] << 8) | (final[3] << 24));
-            //return verification;
         }
     }
 }

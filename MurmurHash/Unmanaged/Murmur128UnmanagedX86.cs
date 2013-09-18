@@ -1,4 +1,5 @@
-﻿/// Copyright 2012 Darren Kopp
+﻿#pragma warning disable 1587
+/// Copyright 2012 Darren Kopp
 ///
 /// Licensed under the Apache License, Version 2.0 (the "License");
 /// you may not use this file except in compliance with the License.
@@ -11,20 +12,23 @@
 /// WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 /// See the License for the specific language governing permissions and
 /// limitations under the License.
+#pragma warning restore 1587
 
 using System.Runtime.CompilerServices;
 
+// ReSharper disable CheckNamespace
 namespace Murmur
+// ReSharper restore CheckNamespace
 {
     internal class Murmur128UnmanagedX86 : Murmur128
     {
-        private const uint C1 = 0x239b961b;
+        private const uint _c1 = 0x239b961b;
 
-        private const uint C2 = 0xab0e9789;
+        private const uint _c2 = 0xab0e9789;
 
-        private const uint C3 = 0x38b34ae5;
+        private const uint _c3 = 0x38b34ae5;
 
-        private const uint C4 = 0xa1e38b93;
+        private const uint _c4 = 0xa1e38b93;
 
         internal Murmur128UnmanagedX86(uint seed = 0)
             : base(seed)
@@ -96,19 +100,19 @@ namespace Murmur
                     while (blocks-- > 0)
                     {
                         // K1 - consume first integer
-                        this.H1 ^= (*b++*C1).RotateLeft(15)*C2;
+                        this.H1 ^= (*b++*_c1).RotateLeft(15)*_c2;
                         this.H1 = (this.H1.RotateLeft(19) + this.H2)*5 + 0x561ccd1b;
 
                         // K2 - consume second integer
-                        this.H2 ^= (*b++*C2).RotateLeft(16)*C3;
+                        this.H2 ^= (*b++*_c2).RotateLeft(16)*_c3;
                         this.H2 = (this.H2.RotateLeft(17) + this.H3)*5 + 0x0bcaa747;
 
                         // K3 - consume third integer
-                        this.H3 ^= (*b++*C3).RotateLeft(17)*C4;
+                        this.H3 ^= (*b++*_c3).RotateLeft(17)*_c4;
                         this.H3 = (this.H3.RotateLeft(15) + this.H4)*5 + 0x96cd1c35;
 
                         // K4 - consume fourth integer
-                        this.H4 ^= (*b++*C4).RotateLeft(18)*C1;
+                        this.H4 ^= (*b++*_c4).RotateLeft(18)*_c1;
                         this.H4 = (this.H4.RotateLeft(13) + this.H1)*5 + 0x32ac3b17;
                     }
 
@@ -174,10 +178,10 @@ namespace Murmur
                     break;
             }
 
-            this.H4 ^= (k4*C4).RotateLeft(18)*C1;
-            this.H3 ^= (k3*C3).RotateLeft(17)*C4;
-            this.H2 ^= (k2*C2).RotateLeft(16)*C3;
-            this.H1 ^= (k1*C1).RotateLeft(15)*C2;
+            this.H4 ^= (k4*_c4).RotateLeft(18)*_c1;
+            this.H3 ^= (k3*_c3).RotateLeft(17)*_c4;
+            this.H2 ^= (k2*_c2).RotateLeft(16)*_c3;
+            this.H1 ^= (k1*_c1).RotateLeft(15)*_c2;
         }
 
         protected override byte[] HashFinal()

@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
+using System.Linq;
 using System.Security.Cryptography;
 using System.Text;
 using Murmur;
@@ -10,74 +11,73 @@ namespace MurmurRunner
 {
     internal class Program
     {
-        private static readonly HashAlgorithm Unmanaged = MurmurHash.Create128(managed: false);
+        private static readonly HashAlgorithm _unmanaged = MurmurHash.Create128(managed: false);
 
-        private static readonly HashAlgorithm Managed = MurmurHash.Create128(managed: true);
+        private static readonly HashAlgorithm _managed = MurmurHash.Create128();
 
-        private static readonly HashAlgorithm Unmanaged32 = MurmurHash.Create32(managed: false);
+        private static readonly HashAlgorithm _unmanaged32 = MurmurHash.Create32(managed: false);
 
-        private static readonly HashAlgorithm Managed32 = MurmurHash.Create32(managed: true);
+        private static readonly HashAlgorithm _managed32 = MurmurHash.Create32();
 
-        private static readonly HashAlgorithm Sha1 = SHA1.Create();
+        private static readonly HashAlgorithm _sha1 = SHA1.Create();
 
-        private static readonly HashAlgorithm Md5 = MD5.Create();
+        private static readonly HashAlgorithm _md5 = MD5.Create();
 
-        private static readonly byte[] RandomData = GenerateRandomData();
+        private static readonly byte[] _randomData = GenerateRandomData();
 
-        private static readonly byte[] SampleData = CreateSampleData();
+        private static readonly byte[] _sampleData = CreateSampleData();
 
-        private const int FAST_ITERATION_COUNT = 10000000;
+        private const int _fastIterationCount = 10000000;
 
-        private const int SLOW_ITERATION_COUNT = 100000;
+        private const int _slowIterationCount = 100000;
 
-        private static readonly IndentingConsoleWriter OutputWriter = new IndentingConsoleWriter();
+        private static readonly IndentingConsoleWriter _outputWriter = new IndentingConsoleWriter();
 
-        private static void Main(string[] args)
+        private static void Main()
         {
-            OutputWriter.WriteLine("* Environment Architecture: {0}", Environment.Is64BitProcess ? "x64" : "x86");
-            OutputWriter.NewLines(1);
+            _outputWriter.WriteLine("* Environment Architecture: {0}", Environment.Is64BitProcess ? "x64" : "x86");
+            _outputWriter.NewLines();
 
-            using (OutputWriter.Indent(2))
+            using (_outputWriter.Indent(2))
             {
                 // guid output
                 var guidSteps = new Dictionary<string, Tuple<HashAlgorithm, int>>
                     {
-                        {"Murmur 32 Managed", Tuple.Create(Managed32, FAST_ITERATION_COUNT)},
-                        {"Murmur 32 Unanaged", Tuple.Create(Unmanaged32, FAST_ITERATION_COUNT)},
-                        {"Murmur 128 Managed", Tuple.Create(Managed, FAST_ITERATION_COUNT)},
-                        {"Murmur 128 Unmanaged", Tuple.Create(Unmanaged, FAST_ITERATION_COUNT)},
-                        {"SHA1", Tuple.Create(Sha1, SLOW_ITERATION_COUNT)},
-                        {"MD5", Tuple.Create(Md5, SLOW_ITERATION_COUNT)}
+                        {"Murmur 32 Managed", Tuple.Create(_managed32, _fastIterationCount)},
+                        {"Murmur 32 Unanaged", Tuple.Create(_unmanaged32, _fastIterationCount)},
+                        {"Murmur 128 Managed", Tuple.Create(_managed, _fastIterationCount)},
+                        {"Murmur 128 Unmanaged", Tuple.Create(_unmanaged, _fastIterationCount)},
+                        {"SHA1", Tuple.Create(_sha1, _slowIterationCount)},
+                        {"MD5", Tuple.Create(_md5, _slowIterationCount)}
                     };
 
-                Run(name: "Guid x 8", dataLength: SampleData.LongLength, hasher: a => a.ComputeHash(SampleData),
-                    steps: guidSteps);
-                Run(name: "Guid x 8 Partial", dataLength: SampleData.LongLength - 3,
-                    hasher: a => a.ComputeHash(SampleData, 3, (int) (SampleData.LongLength - 3)), steps: guidSteps);
+                Run("Guid x 8", _sampleData.LongLength, a => a.ComputeHash(_sampleData), guidSteps);
+                Run("Guid x 8 Partial", _sampleData.LongLength - 3, a => a.ComputeHash(_sampleData, 3, (int) (_sampleData.LongLength - 3)), guidSteps);
 
                 // random data tests
                 var randomSteps = new Dictionary<string, Tuple<HashAlgorithm, int>>
                     {
-                        {"Murmur 32 Managed", Tuple.Create(Managed32, 2999)},
-                        {"Murmur 32 Unanaged", Tuple.Create(Unmanaged32, 2999)},
-                        {"Murmur 128 Managed", Tuple.Create(Managed, 2999)},
-                        {"Murmur 128 Unmanaged", Tuple.Create(Unmanaged, 2999)},
-                        {"SHA1", Tuple.Create(Sha1, 2999)},
-                        {"MD5", Tuple.Create(Md5, 2999)}
+                        {"Murmur 32 Managed", Tuple.Create(_managed32, 2999)},
+                        {"Murmur 32 Unanaged", Tuple.Create(_unmanaged32, 2999)},
+                        {"Murmur 128 Managed", Tuple.Create(_managed, 2999)},
+                        {"Murmur 128 Unmanaged", Tuple.Create(_unmanaged, 2999)},
+                        {"SHA1", Tuple.Create(_sha1, 2999)},
+                        {"MD5", Tuple.Create(_md5, 2999)}
                     };
 
-                Run(name: "Random", dataLength: RandomData.LongLength, hasher: a => a.ComputeHash(RandomData),
-                    steps: randomSteps);
+                Run("Random", _randomData.LongLength, a => a.ComputeHash(_randomData), randomSteps);
 
-                using (var stream = new MemoryStream(RandomData))
+                using (var stream = new MemoryStream(_randomData))
                 {
                     Func<HashAlgorithm, byte[]> streamhasher = a =>
                         {
+// ReSharper disable AccessToDisposedClosure
                             stream.Position = 0L;
                             return a.ComputeHash(stream);
+// ReSharper restore AccessToDisposedClosure
                         };
 
-                    Run(name: "Stream", dataLength: stream.Length, hasher: streamhasher, steps: randomSteps);
+                    Run("Stream", stream.Length, streamhasher, randomSteps);
                 }
             }
 
@@ -91,8 +91,8 @@ namespace MurmurRunner
         private static void Run(string name, long dataLength, Func<HashAlgorithm, byte[]> hasher,
             Dictionary<string, Tuple<HashAlgorithm, int>> steps)
         {
-            OutputWriter.WriteLine("* Data Set: {0}", name);
-            using (OutputWriter.Indent())
+            _outputWriter.WriteLine("* Data Set: {0}", name);
+            using (_outputWriter.Indent())
             {
                 foreach (var step in steps)
                 {
@@ -100,7 +100,7 @@ namespace MurmurRunner
                     var algorithm = step.Value.Item1;
                     var iterations = step.Value.Item2;
 
-                    OutputWriter.WriteLine("{1} x {0:N0}", iterations, algorithmFriendlyName);
+                    _outputWriter.WriteLine("{1} x {0:N0}", iterations, algorithmFriendlyName);
                     Profile(algorithm, iterations, dataLength, hasher);
                 }
             }
@@ -109,7 +109,7 @@ namespace MurmurRunner
         private static void Profile(HashAlgorithm algorithm, int iterations, long dataLength,
             Func<HashAlgorithm, byte[]> hasher)
         {
-            using (OutputWriter.Indent())
+            using (_outputWriter.Indent())
             {
                 var referenceHash = hasher(algorithm);
                 //WriteProfilingResult("Runs", "{0:N0}", iterations);
@@ -133,7 +133,7 @@ namespace MurmurRunner
                 WriteThroughput(dataLength, iterations, timer);
             }
 
-            OutputWriter.NewLines();
+            _outputWriter.NewLines();
         }
 
         private static Stopwatch Execute(HashAlgorithm algorithm, int iterations, byte[] expected,
@@ -143,7 +143,7 @@ namespace MurmurRunner
             int left = Console.CursorLeft;
             int top = Console.CursorTop;
 
-            int batches = 100;
+            const int batches = 100;
             int batchSize = iterations/batches;
             var timer = Stopwatch.StartNew();
             for (int i = 0; i < batches; i++)
@@ -182,11 +182,7 @@ namespace MurmurRunner
         private static bool Equal(byte[] expected, byte[] result)
         {
             if (expected.Length != result.Length) return false;
-            for (int i = 0; i < expected.Length; i++)
-                if (expected[i] != result[i])
-                    return false;
-
-            return true;
+            return !expected.Where((t, i) => t != result[i]).Any();
         }
 
         private static double Divide(long a, long b)
@@ -198,7 +194,7 @@ namespace MurmurRunner
         {
             //var value = string.Format("* {0}:\t===>\t", name);
             var value = string.Format("* {0}:\t", name);
-            OutputWriter.WriteLine(value + format, args);
+            _outputWriter.WriteLine(value + format, args);
         }
 
         private static string GetHashAsString(byte[] hash)
@@ -243,7 +239,7 @@ namespace MurmurRunner
                     new Guid("46F54EF7-5C8C-48C5-82EF-9F4A00D9BA0D"),
                     new Guid("DC34023A-A985-4EA2-BD22-9F4A00D9BA0D"),
                     new Guid("D12CAC55-E7C5-45D9-AE39-A0200092ACB0"),
-                    new Guid("AD9EE455-27E2-4C0D-B3F1-9F4A00D9BA0D"),
+                    new Guid("AD9EE455-27E2-4C0D-B3F1-9F4A00D9BA0D")
                 });
 
             return data;
@@ -295,20 +291,20 @@ namespace MurmurRunner
 
         private class IndentationScope : IDisposable
         {
-            private readonly IndentingConsoleWriter Writer;
+            private readonly IndentingConsoleWriter _writer;
 
-            private readonly int Amount;
+            private readonly int _amount;
 
             public IndentationScope(IndentingConsoleWriter writer, int amount)
             {
-                this.Writer = writer;
-                this.Amount = amount;
+                this._writer = writer;
+                this._amount = amount;
             }
 
             public void Dispose()
             {
                 // restore indent amount
-                this.Writer.SetIndent(this.Amount);
+                this._writer.SetIndent(this._amount);
             }
         }
     }

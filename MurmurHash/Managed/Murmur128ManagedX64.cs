@@ -1,4 +1,5 @@
-﻿/// Copyright 2012 Darren Kopp
+﻿#pragma warning disable 1587
+/// Copyright 2012 Darren Kopp
 ///
 /// Licensed under the Apache License, Version 2.0 (the "License");
 /// you may not use this file except in compliance with the License.
@@ -11,17 +12,20 @@
 /// WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 /// See the License for the specific language governing permissions and
 /// limitations under the License.
+#pragma warning restore 1587
 
 using System;
 using System.Runtime.CompilerServices;
 
+// ReSharper disable CheckNamespace
 namespace Murmur
+// ReSharper restore CheckNamespace
 {
     internal class Murmur128ManagedX64 : Murmur128
     {
-        private const ulong C1 = 0x87c37b91114253d5;
+        private const ulong _c1 = 0x87c37b91114253d5;
 
-        private const ulong C2 = 0x4cf5ad432745937f;
+        private const ulong _c2 = 0x4cf5ad432745937f;
 
         internal Murmur128ManagedX64(uint seed = 0)
             : base(seed)
@@ -74,10 +78,10 @@ namespace Murmur
             int alignedLength = start + (length - remainder);
             for (int i = start; i < alignedLength; i += 16)
             {
-                this.H1 ^= (data.ToUInt64(i)*C1).RotateLeft(31)*C2;
+                this.H1 ^= (data.ToUInt64(i)*_c1).RotateLeft(31)*_c2;
                 this.H1 = (this.H1.RotateLeft(27) + this.H2)*5 + 0x52dce729;
 
-                this.H2 ^= (data.ToUInt64(i + 8)*C2).RotateLeft(33)*C1;
+                this.H2 ^= (data.ToUInt64(i + 8)*_c2).RotateLeft(33)*_c1;
                 this.H2 = (this.H2.RotateLeft(31) + this.H1)*5 + 0x38495ab5;
             }
 
@@ -141,8 +145,8 @@ namespace Murmur
                     break;
             }
 
-            this.H2 ^= (k2*C2).RotateLeft(33)*C1;
-            this.H1 ^= (k1*C1).RotateLeft(31)*C2;
+            this.H2 ^= (k2*_c2).RotateLeft(33)*_c1;
+            this.H1 ^= (k1*_c1).RotateLeft(31)*_c2;
         }
 
         protected override byte[] HashFinal()
