@@ -1,4 +1,6 @@
-﻿using System.Linq;
+﻿// ReSharper disable UnusedMember.Local
+// ReSharper disable InconsistentNaming
+using System.Linq;
 using System.Security.Cryptography;
 using Machine.Specifications;
 
@@ -9,9 +11,9 @@ namespace Murmur.Specs
         [Subject("Murmur128")]
         private class given_a_managed_x64_algorithm
         {
-            protected static readonly HashExpection Expectation = new HashExpection(128, 0x6384BA69);
+            private static readonly HashExpection Expectation = new HashExpection(128, 0x6384BA69);
 
-            protected static uint VerificationHash;
+            private static uint VerificationHash;
 
             private Establish context = () => VerificationHash = 0;
 
@@ -27,9 +29,9 @@ namespace Murmur.Specs
         [Subject("Murmur128")]
         private class given_an_unmanaged_x64_algorithm
         {
-            protected static readonly HashExpection Expectation = new HashExpection(128, 0x6384BA69);
+            private static readonly HashExpection Expectation = new HashExpection(128, 0x6384BA69);
 
-            protected static uint VerificationHash;
+            private static uint VerificationHash;
 
             private Establish context = () => VerificationHash = 0;
 
@@ -45,9 +47,9 @@ namespace Murmur.Specs
         [Subject("Murmur128")]
         private class given_a_managed_x86_algorithm
         {
-            protected static readonly HashExpection Expectation = new HashExpection(128, 0xB3ECE62A);
+            private static readonly HashExpection Expectation = new HashExpection(128, 0xB3ECE62A);
 
-            protected static uint VerificationHash;
+            private static uint VerificationHash;
 
             private Establish context = () => VerificationHash = 0;
 
@@ -63,9 +65,9 @@ namespace Murmur.Specs
         [Subject("Murmur128")]
         private class given_an_unmanaged_x86_algorithm
         {
-            protected static readonly HashExpection Expectation = new HashExpection(128, 0xB3ECE62A);
+            private static readonly HashExpection Expectation = new HashExpection(128, 0xB3ECE62A);
 
-            protected static uint VerificationHash;
+            private static uint VerificationHash;
 
             private Establish context = () => VerificationHash = 0;
 
@@ -81,15 +83,15 @@ namespace Murmur.Specs
         [Subject("Murmur128")]
         private class given_a_managed_and_unmanaged_algorithm
         {
-            protected static byte[] Input;
+            private static byte[] Input;
 
-            protected static HashAlgorithm Managed;
+            private static HashAlgorithm Managed;
 
-            protected static HashAlgorithm Unmanaged;
+            private static HashAlgorithm Unmanaged;
 
-            protected static byte[] ManagedResult;
+            private static byte[] ManagedResult;
 
-            protected static byte[] UnmanagedResult;
+            private static byte[] UnmanagedResult;
 
             private Establish context = () =>
                 {
@@ -118,3 +120,5 @@ namespace Murmur.Specs
         }
     }
 }
+// ReSharper restore InconsistentNaming
+// ReSharper restore UnusedMember.Local
