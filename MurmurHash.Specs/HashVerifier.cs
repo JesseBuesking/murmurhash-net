@@ -1,26 +1,22 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Security.Cryptography;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Murmur.Specs
 {
-    static class HashVerifier
+    internal static class HashVerifier
     {
         public static uint ComputeVerificationHash(int bits, Func<uint, HashAlgorithm> algorithmFactory)
         {
-            int bytes = bits / 8;
+            int bytes = bits/8;
 
             byte[] key = new byte[256];
-            byte[] hashes = new byte[bytes * 256];
+            byte[] hashes = new byte[bytes*256];
 
             for (int i = 0; i < 256; i++)
             {
-                key[i] = (byte)i;
-                using (var algorithm = algorithmFactory((uint)(256 - i)))
-                    Array.Copy(algorithm.ComputeHash(key, 0, i), 0, hashes, i * bytes, bytes);
+                key[i] = (byte) i;
+                using (var algorithm = algorithmFactory((uint) (256 - i)))
+                    Array.Copy(algorithm.ComputeHash(key, 0, i), 0, hashes, i*bytes, bytes);
             }
 
             using (var algorithm = algorithmFactory(0))

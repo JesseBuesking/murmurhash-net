@@ -1,23 +1,25 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace Murmur.Specs
+﻿namespace Murmur.Specs
 {
-    class HashExpection
+    internal class HashExpection
     {
-        readonly uint _Result;
-        readonly int _Bits;
+        private readonly uint _Result;
+
+        private readonly int _Bits;
 
         public HashExpection(int bits, uint result)
         {
-            _Bits = bits;
-            _Result = result;
+            this._Bits = bits;
+            this._Result = result;
         }
 
-        public uint Result { get { return _Result; } }
-        public int Bits { get { return _Bits; } }
+        public uint Result
+        {
+            get { return this._Result; }
+        }
+
+        public int Bits
+        {
+            get { return this._Bits; }
+        }
     }
 }

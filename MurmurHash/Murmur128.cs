@@ -19,13 +19,20 @@ namespace Murmur
     public abstract class Murmur128 : HashAlgorithm
     {
         private readonly uint _Seed;
+
         protected Murmur128(uint seed)
         {
-            _Seed = seed;
+            this._Seed = seed;
         }
 
-        public uint Seed { get { return _Seed; } }
+        public uint Seed
+        {
+            get { return this._Seed; }
+        }
 
-        public override int HashSize { get { return 128; } }
+        public override int HashSize
+        {
+            get { return 128; }
+        }
     }
 }

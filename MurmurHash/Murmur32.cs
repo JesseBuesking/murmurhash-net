@@ -20,39 +20,55 @@ namespace Murmur
     public abstract class Murmur32 : HashAlgorithm
     {
         protected const uint C1 = 0xcc9e2d51;
+
         protected const uint C2 = 0x1b873593;
 
         private readonly uint _Seed;
 
         protected Murmur32(uint seed)
         {
-            _Seed = seed;
-            Reset();
+            this._Seed = seed;
+            this.Reset();
         }
 
-        public override int HashSize { get { return 32; } }
-        public uint Seed { get { return _Seed; } }
+        public override int HashSize
+        {
+            get { return 32; }
+        }
 
-        protected uint H1 { get; set; }
+        public uint Seed
+        {
+            get { return this._Seed; }
+        }
 
-        protected int Length { get; set; }
+        protected uint H1
+        {
+            get;
+            set;
+        }
+
+        protected int Length
+        {
+            get;
+            set;
+        }
 
         private void Reset()
         {
-            H1 = Seed;
-            Length = 0;
+            this.H1 = this.Seed;
+            this.Length = 0;
         }
 
         public override void Initialize()
         {
-            Reset();
+            this.Reset();
         }
 
         protected override byte[] HashFinal()
         {
-            H1 = (H1 ^ (uint)Length).FMix();
+            this.H1 = (this.H1 ^ (uint) this.Length).FMix();
 
-            return BitConverter.GetBytes(H1);
+            return BitConverter.GetBytes(this.H1);
         }
     }
 }
